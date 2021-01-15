@@ -20,12 +20,26 @@ export default (props) => {
         handleBackNavigation
     } = props
     useEffect(() => {
+        
     }, [])
+    const actionOpenDrawer = () => {
+        Actions.drawerOpen()
+    }
     return (
         <View style={[
             styles.container,
             isOutline ? { backgroundColor: Colors.WHITE_LIGHT_GRAY } : null
         ]}>
+            {
+                props.isNavigation ?
+                    <TouchableOpacity style={styles.navigationBurgerContainer} onPress={actionOpenDrawer}>
+                        <FontAwesome
+                            size={20}
+                            name={"bars"}
+                            color={Colors.WHITE}
+                        />
+                    </TouchableOpacity> : null
+            }
             {
                 handleBackNavigation ?
                     <TouchableOpacity

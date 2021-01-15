@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 // screens identified by the router
 import HomeScreen from '../container/HomeScreen/HomeScreen'
+import LoginScreen from '../container/LoginScreen/LoginScreen'
+import DrawerContent from '../components/DrawerContent'
 import DetailItemScreen from '../container/DetailItemScreen/DetailItemScreen'
 import { Colors } from '../GlobalConfig';
 
@@ -77,19 +79,30 @@ class NavigationRouter extends Component {
             <Router
                 navigationBarStyle={{ backgroundColor: Colors.BLUE_DARK }}
                 backAndroidHandler={this.handleback}>
-                <Stack
-                    transitionConfig={transitionConfig}
-                    key='root'>
-                    <Scene
-                        initial
-                        key='home'
-                        hideNavBar
-                        component={HomeScreen} />
-                    <Scene
-                        key='detailScreen'
-                        hideNavBar
-                        component={DetailItemScreen} />
-                </Stack>
+                <Drawer
+                    hideNavBar
+                    key="drawerMenu"
+                    drawerWidth={300}
+                    drawerLockMode='unlocked'
+                    contentComponent={DrawerContent}>
+                    <Stack
+                        transitionConfig={transitionConfig}
+                        key='root'>
+                        <Scene
+                            initial
+                            key='login'
+                            hideNavBar
+                            component={LoginScreen} />
+                        <Scene
+                            key='home'
+                            hideNavBar
+                            component={HomeScreen} />
+                        <Scene
+                            key='detailScreen'
+                            hideNavBar
+                            component={DetailItemScreen} />
+                    </Stack>
+                </Drawer>
             </Router>
         )
     }

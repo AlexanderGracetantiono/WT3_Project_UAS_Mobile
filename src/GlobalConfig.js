@@ -17,7 +17,9 @@ export const Colors = {
     GRAY_LIGHT: '#efefef',
     WHITE: '#ffffff',
     BLUE: '#0691ce',
-    ORANGE:'#ffbb1c'
+    ORANGE:'#ffbb1c',
+    GRAY_LOGIN_BG:'#f1f1f1ff',
+
 }
 
 export const Metrics = Object.freeze({
@@ -36,4 +38,7 @@ export const Fonts = {
     INTER_MEDIUM: "Inter-Medium",
     INTER_REGULAR: "Inter-Regular",
     INTER_SEMI_BOLD: "Inter-SemiBold",
+}
+export const Images = {
+    ILLUST_LOGIN: require("./assets/img/illust_book_jpg.jpg")
 }
