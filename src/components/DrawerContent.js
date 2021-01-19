@@ -9,18 +9,27 @@ import {
     Animated,
     TouchableOpacity
 } from "react-native";
-import { Colors, StorageKey, Images, Fonts, Metrics } from '../GlobalConfig';
+import { Colors, StorageKey, Images, Fonts, Metrics, StorageKeys } from '../GlobalConfig';
 import { Actions } from 'react-native-router-flux';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import AsyncStorage from '@react-native-community/async-storage';
 export default (props) => {
     const [menuList, setMenuList] = useState([])
+    const [userData, setUserData] = useState({})
     useEffect(() => {
+        setUserData({})
         setMenuList([
             {
                 id: "1",
                 name: "Home",
                 icon: "home",
                 action_id: "home",
+            },
+            {
+                id: "2",
+                name: "User Account",
+                icon: "user",
+                action_id: "account",
             },
             {
                 id: "5",
@@ -30,6 +39,12 @@ export default (props) => {
             },
         ])
     }, [])
+    useEffect(() => {
+        AsyncStorage.getItem(StorageKeys.userData, (err, res) => {
+            let get_data_user = JSON.parse(res)
+            setUserData(get_data_user)
+        })
+    }, [Actions.currentScene])
     const onMenuClicked = (item) => () => {
         switch (item) {
             case "home":
@@ -39,7 +54,11 @@ export default (props) => {
                     Actions.drawerClose()
                 }
                 break;
+            case "account":
+                Actions.accountScreen()
+                break;
             case "logout":
+                AsyncStorage.removeItem(StorageKeys.userData)
                 Actions.login()
                 break;
             default:
@@ -57,8 +76,12 @@ export default (props) => {
                     />
                 </View>
                 <View style={styles.userDetailContainer}>
-                    <Text numberOfLines={1} style={styles.userNameTextStyle}>Alexander Grace.</Text>
-                    <Text numberOfLines={1} style={styles.userCompanyNameStyle}>Univ. Kwik Kian Gie</Text>
+                    <Text numberOfLines={1} style={styles.userNameTextStyle}>
+                        {userData?userData.name:"Alexander Grace."}
+                        </Text>
+                    <Text numberOfLines={1} style={styles.userCompanyNameStyle}>
+                        {userData?userData.company:"Univ. Kwik Kian Gie"}
+                    </Text>
                 </View>
             </View>
             <FlatList
@@ -76,7 +99,7 @@ export default (props) => {
                             />
                             <Text numberOfLines={1} style={styles.drawerMenuTitleText}>{item.name}</Text>
                             <FontAwesome
-                                size={25}
+                                size={20}
                                 name={"chevron-right"}
                                 color={Colors.BLUE_DARK_LIGHT}
                             />

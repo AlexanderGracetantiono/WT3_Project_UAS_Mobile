@@ -7,67 +7,51 @@ import {
     TouchableOpacity,
     Image,
 } from "react-native";
-import { Colors, Fonts, Metrics } from '../../GlobalConfig';
+import { Colors, Fonts, Metrics, Images } from '../../GlobalConfig';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import CustomHeader from "../../components/CustomHeader";
-import { RestaurantManagement } from "../../models/RestaurantManagement";
+import CustomFullLoading from "../../components/CustomFullLoading";
+import { BookManagement } from "../../models/BookManagement";
 import { wait } from "../../GlobalFunction";
 import { Actions } from "react-native-router-flux";
+import CustomNotificationModal from "../../components/CustomNotificationModal";
+
+import { LogBox } from 'react-native';
 export default (props) => {
-    const [restaurantListData, setRestaurantListData] = useState([])
+    const [bookListData, setBookListData] = useState([])
     const [isLoading, setIsLoading] = useState()
+    const [isSelectCatModalShow, setIsSelectCatModalShow] = useState(false)
     useEffect(() => {
-        // getListRestaurant()
-        setRestaurantListData([
-            {
-                id: 1,
-                name: "Buku 1",
-                img: "https://imagesvc.meredithcorp.io/v3/mm/image?q=85&c=sc&poi=face&w=405&h=540&url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F6%2F2016%2F09%2Fhpchamber.jpg"
-            },
-            {
-                id: 2,
-                name: "Buku 2 sangat panjang namanya",
-                img: "https://imagesvc.meredithcorp.io/v3/mm/image?q=85&c=sc&poi=face&w=405&h=540&url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F6%2F2016%2F09%2Fhpchamber.jpg"
-            },
-            {
-                id: 3,
-                name: "Buku 3",
-                img: "https://imagesvc.meredithcorp.io/v3/mm/image?q=85&c=sc&poi=face&w=405&h=540&url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F6%2F2016%2F09%2Fhpchamber.jpg"
-            },
-            {
-                id: 4,
-                name: "Buku 4",
-                img: "https://imagesvc.meredithcorp.io/v3/mm/image?q=85&c=sc&poi=face&w=405&h=540&url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F6%2F2016%2F09%2Fhpchamber.jpg"
-            },
-            {
-                id: 5,
-                name: "Buku 5",
-                img: "https://imagesvc.meredithcorp.io/v3/mm/image?q=85&c=sc&poi=face&w=405&h=540&url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F6%2F2016%2F09%2Fhpchamber.jpg"
-            },
-        ])
+        LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+        LogBox.ignoreAllLogs();//Ignore all log notifications
+
+        setIsSelectCatModalShow(false)
         setIsLoading(true)
+        getListBook()
+        setBookListData([])
     }, [])
-    const getListRestaurant = () => {
-        RestaurantManagement.getListRestaurant(res => {
+    const getListBook = () => {
+        setIsLoading(true)
+        BookManagement.getListBook(res => {
+            console.log("DATA: ", res)
             const { status, result } = res
             switch (status) {
                 case 200:
-                    console.log("DATA: ", result.data)
-                    setRestaurantListData(result.data)
+                    setBookListData(result.data)
                     wait(200)
                         .then(() => {
                             setIsLoading(false)
                         })
                     break;
                 case 400:
-                    setRestaurantListData([])
+                    setBookListData([])
                     wait(200)
                         .then(() => {
                             setIsLoading(false)
                         })
                     break;
                 default:
-                    setRestaurantListData([])
+                    setBookListData([])
                     wait(200)
                         .then(() => {
                             setIsLoading(false)
@@ -76,34 +60,133 @@ export default (props) => {
             }
         })
     }
-    const redirectDetailRestaurant = (item) => () => {
+    const getListBookByValue = (searchValue = "") => {
+        setIsLoading(true)
+        BookManagement.getListBookBySearch(searchValue, res => {
+            const { status, result } = res
+            console.log("DATA: ", result)
+            switch (status) {
+                case 200:
+                    setBookListData(result)
+                    wait(200)
+                        .then(() => {
+                            setIsLoading(false)
+                        })
+                    break;
+                case 400:
+                    setBookListData([])
+                    wait(200)
+                        .then(() => {
+                            setIsLoading(false)
+                        })
+                    break;
+                default:
+                    setBookListData([])
+                    wait(200)
+                        .then(() => {
+                            setIsLoading(false)
+                        })
+                    break;
+            }
+        })
+    }
+    const getListBookByKategori = (kategori = "") => {
+        setIsLoading(true)
+        BookManagement.getListBookByKategori(kategori, res => {
+            const { status, result } = res
+            console.log("DATA: ", result)
+            switch (status) {
+                case 200:
+                    setBookListData(result)
+                    wait(200)
+                        .then(() => {
+                            setIsLoading(false)
+                        })
+                    break;
+                case 400:
+                    setBookListData([])
+                    wait(200)
+                        .then(() => {
+                            setIsLoading(false)
+                        })
+                    break;
+                default:
+                    setBookListData([])
+                    wait(200)
+                        .then(() => {
+                            setIsLoading(false)
+                        })
+                    break;
+            }
+        })
+    }
+    const redirectDetailBook = (item) => () => {
         Actions.detailScreen({ item: item })
     }
+    //Search Bar
+    const searchItemByValue = (value) => {
+        getListBookByValue(value)
+    }
+    const searchItemCancelAction = () => {
+        getListBook()
+    }
+    //MODAL GET KATEGORI
+    const handleCloseModal = () => {
+        setIsSelectCatModalShow(false)
+    }
+    const handleSubmitModal = (value) => () => {
+        setIsSelectCatModalShow(false)
+        console.log("KATEGORI:", value.name)
+        if (value.name == "All") {
+            getListBook()
+        } else {
+            getListBookByKategori(value.name)
+        }
+    }
+    const handleOpenModal = () => {
+        setIsSelectCatModalShow(true)
+    }
+
     return (
         <View style={styles.container}>
+            <CustomNotificationModal
+                handleSubmitModal={handleSubmitModal}
+                handleCloseModal={handleCloseModal}
+                isShowModal={isSelectCatModalShow} />
             <CustomHeader
-                title="Restaurant"
+                title="Book"
                 isNavigation={true}
+                searchOptions={true}
+                onFilterActionClick={handleOpenModal}
+
+                onSearchAction={searchItemByValue}
+                onSearchCancel={searchItemCancelAction}
+                placeholderSearchBox={"Cari buku, e.g. 'Komi San'"}
             />
-            <FlatList
-                data={restaurantListData}
-                extraData={[restaurantListData]}
-                horizontal={false}
-                numColumns={2}
-                columnWrapperStyle={styles.columnWrapperCustomStyle}
-                renderItem={({ item, index }) => {
-                    return (
-                        <TouchableOpacity
-                            // onPress={redirectDetailRestaurant(item)}
-                            style={styles.itemContainer}>
-                            <Image style={styles.imgStyle} source={{ uri: item.img }} />
-                            <Text numberOfLines={2} style={styles.itemTitleText}>{item.name}</Text>
-                        </TouchableOpacity>
-                    )
-                }}
-                keyExtractor={(item, index) => {
-                    return String(item.id)
-                }} />
+            {
+                isLoading ?
+                    <CustomFullLoading /> :
+                    <FlatList
+                        data={bookListData}
+                        extraData={[bookListData]}
+                        horizontal={false}
+                        numColumns={2}
+                        columnWrapperStyle={styles.columnWrapperCustomStyle}
+                        renderItem={({ item, index }) => {
+                            return (
+                                <TouchableOpacity
+                                    onPress={redirectDetailBook(item)}
+                                    style={styles.itemContainer}>
+                                    <Image style={styles.imgStyleDefault} source={Images.ILLUST_NO_IMG} />
+                                    <Image style={styles.imgStyle} source={{ uri: item.cover }} />
+                                    <Text numberOfLines={2} style={styles.itemTitleText}>{item.judul}</Text>
+                                </TouchableOpacity>
+                            )
+                        }}
+                        keyExtractor={(item, index) => {
+                            return String(item.kd_buku)
+                        }} />
+            }
         </View >
     );
 }
@@ -117,10 +200,18 @@ const styles = StyleSheet.create({
         height: 250,
         elevation: 10,
         backgroundColor: Colors.WHITE_LIGHT_GRAY,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     imgStyle: {
         width: '100%',
         height: 220,
+    },
+    imgStyleDefault: {
+        width: '70%',
+        height: 200,
+        position: 'absolute',
+        resizeMode: 'contain'
     },
     itemTitleText: {
         fontFamily: Fonts.INTER_SEMI_BOLD,

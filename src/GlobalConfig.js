@@ -39,6 +39,11 @@ export const Fonts = {
     INTER_REGULAR: "Inter-Regular",
     INTER_SEMI_BOLD: "Inter-SemiBold",
 }
+export const StorageKeys = {
+    userData: 'user_data',
+}
 export const Images = {
-    ILLUST_LOGIN: require("./assets/img/illust_book_jpg.jpg")
+    ILLUST_LOGIN: require("./assets/img/illust_book_jpg.jpg"),
+    ILLUST_NO_IMG: require("./assets/img/illust_no_product_image.png"),
+    LOGO_APP: require("./assets/img/book_logo.png"),
 }

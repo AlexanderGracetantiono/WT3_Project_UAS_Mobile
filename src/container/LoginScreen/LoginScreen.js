@@ -7,14 +7,14 @@ import {
     TouchableOpacity,
     Image,
 } from "react-native";
-import { Colors, Fonts, Metrics, Images } from '../../GlobalConfig';
+import { Colors, Fonts, Metrics, Images, StorageKeys } from '../../GlobalConfig';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import CustomHeader from "../../components/CustomHeader";
-import { RestaurantManagement } from "../../models/RestaurantManagement";
 import { wait } from "../../GlobalFunction";
 import { Actions } from "react-native-router-flux";
 import CustomTextInput from "../../components/CustomTextInput";
 import CustomButton from "../../components/CustomButton";
+import AsyncStorage from '@react-native-community/async-storage';
 export default (props) => {
     const [userName, setUserName] = useState("")
     const [password, setPassword] = useState("")
@@ -24,11 +24,21 @@ export default (props) => {
         setPassword("")
         setisLoading(false)
     }, [])
-    const redirectDetailRestaurant = (item) => () => {
-        Actions.detailScreen({ item: item })
-    }
     const handleLogin = () => {
         setisLoading(true)
+        wait(200)
+            .then(() => {
+                Actions.home()
+                setisLoading(false)
+            })
+    }
+    const handleLoginGuest = () => {
+        setisLoading(true)
+        let dataUser ={
+            name:'Guest',
+            company:"Debookers Guest",
+        }
+        AsyncStorage.setItem(StorageKeys.userData,JSON.stringify(dataUser))
         wait(200)
             .then(() => {
                 Actions.home()
@@ -39,6 +49,9 @@ export default (props) => {
         <View style={styles.container}>
             <View style={styles.logoContainer}>
                 <Image source={Images.ILLUST_LOGIN} style={styles.illustLoginStyle} />
+            </View>
+            <View style={styles.titleContainer}>
+                <Text style={styles.titleTextStyle}>Login</Text>
             </View>
             <View style={styles.loginContainer}>
                 <CustomTextInput
@@ -63,6 +76,11 @@ export default (props) => {
                     onPress={handleLogin}
                     label={"Login"}
                 />
+                <TouchableOpacity 
+                onPress={handleLoginGuest}
+                style={styles.guestAccountContainer}>
+                    <Text style={styles.titleTextStyle}>Login as Guest</Text>
+                </TouchableOpacity>
             </View>
         </View >
     );
@@ -74,15 +92,29 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.GRAY_LOGIN_BG,
         alignItems: 'center'
     },
+    titleContainer: {
+        width: '90%',
+        height: 30,
+        alignItems: 'center',
+    },
+    guestAccountContainer: {
+        marginTop:10,
+        alignItems: 'center',
+    },
     itemTitleText: {
         fontFamily: Fonts.INTER_SEMI_BOLD,
         fontSize: 12,
+        color: Colors.BLUE_DARK,
+    },
+    titleTextStyle: {
+        fontFamily: Fonts.INTER_SEMI_BOLD,
+        fontSize: 16,
         color: Colors.BLUE_DARK,
         textAlign: 'center'
     },
     logoContainer: {
         width: '100%',
-        height: '60%',
+        height: '50%',
     },
     illustLoginStyle: {
         width: '100%',

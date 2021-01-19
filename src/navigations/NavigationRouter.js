@@ -11,6 +11,8 @@ import HomeScreen from '../container/HomeScreen/HomeScreen'
 import LoginScreen from '../container/LoginScreen/LoginScreen'
 import DrawerContent from '../components/DrawerContent'
 import DetailItemScreen from '../container/DetailItemScreen/DetailItemScreen'
+import AccountScreen from '../container/AccountScreen/AccountScreen'
+import SplashScreen from '../container/SplashScreen/SplashScreen'
 import { Colors } from '../GlobalConfig';
 
 class NavigationRouter extends Component {
@@ -89,7 +91,11 @@ class NavigationRouter extends Component {
                         transitionConfig={transitionConfig}
                         key='root'>
                         <Scene
+                            key='splash'
                             initial
+                            hideNavBar
+                            component={SplashScreen} />
+                        <Scene
                             key='login'
                             hideNavBar
                             component={LoginScreen} />
@@ -101,6 +107,10 @@ class NavigationRouter extends Component {
                             key='detailScreen'
                             hideNavBar
                             component={DetailItemScreen} />
+                        <Scene
+                            key='accountScreen'
+                            hideNavBar
+                            component={AccountScreen} />
                     </Stack>
                 </Drawer>
             </Router>
