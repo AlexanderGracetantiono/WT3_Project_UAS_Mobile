@@ -5,14 +5,15 @@ export default async (update, API, requestType = 'GET', post_data = null, params
         headers: post_data ?
             {
                 'pos-mms-api-key': token,
-                'Content-Type': 'multipart/form-data',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
                 'application-key': 'XtQdp4sr0tfjZUmVY4FD'
             } :
             {
                 'pos-mms-api-key': token,
                 'application-key': 'XtQdp4sr0tfjZUmVY4FD'
             },
-        body: post_data ? post_data : ''
+        body: post_data ? JSON.stringify(post_data) : ''
     })
         .then((response) => {
             const statusCode = response.status;

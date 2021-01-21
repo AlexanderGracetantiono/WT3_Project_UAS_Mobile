@@ -19,6 +19,7 @@ import CustomNotificationModal from "../../components/CustomNotificationModal";
 import { LogBox } from 'react-native';
 export default (props) => {
     const [bookListData, setBookListData] = useState([])
+    const [genreList, setGenreList] = useState([])
     const [isLoading, setIsLoading] = useState()
     const [isSelectCatModalShow, setIsSelectCatModalShow] = useState(false)
     useEffect(() => {
@@ -27,13 +28,13 @@ export default (props) => {
 
         setIsSelectCatModalShow(false)
         setIsLoading(true)
-        getListBook()
         setBookListData([])
+        setGenreList([])
+        getListKategori()
     }, [])
     const getListBook = () => {
         setIsLoading(true)
         BookManagement.getListBook(res => {
-            console.log("DATA: ", res)
             const { status, result } = res
             switch (status) {
                 case 200:
@@ -64,7 +65,6 @@ export default (props) => {
         setIsLoading(true)
         BookManagement.getListBookBySearch(searchValue, res => {
             const { status, result } = res
-            console.log("DATA: ", result)
             switch (status) {
                 case 200:
                     setBookListData(result)
@@ -92,9 +92,9 @@ export default (props) => {
     }
     const getListBookByKategori = (kategori = "") => {
         setIsLoading(true)
+        console.log("KAT:",kategori)
         BookManagement.getListBookByKategori(kategori, res => {
             const { status, result } = res
-            console.log("DATA: ", result)
             switch (status) {
                 case 200:
                     setBookListData(result)
@@ -120,6 +120,33 @@ export default (props) => {
             }
         })
     }
+    const getListKategori = () => {
+        setIsLoading(false)
+        BookManagement.getListKategoriBook(res => {
+            const { status, result } = res
+            switch (status) {
+                case 200:
+                    var listData = [...result];
+                    listData.push({
+                        kd_kategoribuku: listData.length+2,
+                        nm_kategoribuku: "All",
+                    })
+                    console.log("GENREL ", listData)
+                    setGenreList(listData)
+                    wait(200)
+                        .then(() => {
+                            getListBook()
+                        })
+                    break;
+                case 400:
+                    setGenreList([])
+                    break;
+                default:
+                    setGenreList([])
+                    break;
+            }
+        })
+    }
     const redirectDetailBook = (item) => () => {
         Actions.detailScreen({ item: item })
     }
@@ -136,11 +163,10 @@ export default (props) => {
     }
     const handleSubmitModal = (value) => () => {
         setIsSelectCatModalShow(false)
-        console.log("KATEGORI:", value.name)
-        if (value.name == "All") {
+        if (value.nm_kategoribuku == "All") {
             getListBook()
         } else {
-            getListBookByKategori(value.name)
+            getListBookByKategori(value.nm_kategoribuku)
         }
     }
     const handleOpenModal = () => {
@@ -152,6 +178,7 @@ export default (props) => {
             <CustomNotificationModal
                 handleSubmitModal={handleSubmitModal}
                 handleCloseModal={handleCloseModal}
+                dataList={genreList}
                 isShowModal={isSelectCatModalShow} />
             <CustomHeader
                 title="Book"

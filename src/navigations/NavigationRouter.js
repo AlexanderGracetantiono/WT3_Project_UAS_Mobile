@@ -92,7 +92,6 @@ class NavigationRouter extends Component {
                         key='root'>
                         <Scene
                             key='splash'
-                            initial
                             hideNavBar
                             component={SplashScreen} />
                         <Scene
@@ -100,6 +99,7 @@ class NavigationRouter extends Component {
                             hideNavBar
                             component={LoginScreen} />
                         <Scene
+                            initial
                             key='home'
                             hideNavBar
                             component={HomeScreen} />

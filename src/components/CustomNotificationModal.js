@@ -14,6 +14,9 @@ import {
 import { Fonts, Colors, Metrics } from '../GlobalConfig';
 import Modal from 'react-native-modal';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { BookManagement } from '../models/BookManagement';
+import { wait } from '../GlobalFunction';
+import CustomFullLoading from './CustomFullLoading';
 /**
  * add noStatusBar props if no status bar / translucent
  * add noHeader props if no header
@@ -22,7 +25,8 @@ export default ((props, ref) => {
     const {
         isShowModal,
         handleCloseModal,
-        handleSubmitModal
+        handleSubmitModal,
+        dataList
     } = props
     const [showNotif, setShowNotif] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
@@ -31,36 +35,32 @@ export default ((props, ref) => {
 
     useEffect(() => {
         setIsLoading(false)
-        setGenreSelected({
-            id: 6,
-            name: 'All'
-        })
-        setGenreList([
-            {
-                id: 1,
-                name: 'Novel'
-            },
-            {
-                id: 2,
-                name: 'Komik'
-            },
-            {
-                id: 3,
-                name: 'Action'
-            },
-            {
-                id: 4,
-                name: 'Mystery'
-            },
-            {
-                id: 5,
-                name: 'Drama'
-            },
-            {
-                id: 6,
-                name: 'All'
-            },
-        ])
+        // setGenreList([
+        //     {
+        //         id: 1,
+        //         name: 'Novel'
+        //     },
+        //     {
+        //         id: 2,
+        //         name: 'Komik'
+        //     },
+        //     {
+        //         id: 3,
+        //         name: 'Action'
+        //     },
+        //     {
+        //         id: 4,
+        //         name: 'Mystery'
+        //     },
+        //     {
+        //         id: 5,
+        //         name: 'Drama'
+        //     },
+        //     {
+        //         id: 6,
+        //         name: 'All'
+        //     },
+        // ])
     }, [])
     const genreSelectedAction = (genre = null) => () => {
         console.log(genre)
@@ -74,47 +74,52 @@ export default ((props, ref) => {
 
     const modalNotif = (
         <View style={[styles.notifModalContainer]}>
-            <View style={styles.notifModalHeader}>
-                <Text style={styles.notifModalHeaderTitle}>Select Kategori</Text>
-            </View>
-            <View style={styles.contentContainer}>
-                <FlatList
-                    data={genreList}
-                    extraData={[genreList]}
-                    contentContainerStyle={{
-                        flexDirection: 'row',
-                        flexWrap: 'wrap'
-                    }}
-                    renderItem={({ item, index }) => {
-                        return (
-                            <TouchableOpacity
-                                onPress={genreSelectedAction(item)}
-                                style={[
-                                    styles.itemContainer,
-                                    item.id == genreSelected.id && { backgroundColor: Colors.BLUE_DARK }
-                                ]}>
-                                <Text numberOfLines={1}
-                                    style={[
-                                        styles.itemTitleText,
-                                        item.id == genreSelected.id && { color: Colors.WHITE }
-                                    ]}>{item.name}</Text>
-                            </TouchableOpacity>
-                        )
-                    }}
-                    keyExtractor={(item, index) => {
-                        return String(item.id)
-                    }} />
-            </View>
-            <TouchableOpacity
-                onPress={handleSubmitModal(genreSelected)}
-                style={[styles.buttonContainer, { right: Metrics.SAFE_AREA }]}>
-                <Text style={[styles.notifModalHeaderTitle]}>OK</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                onPress={handleCloseModal}
-                style={[styles.buttonContainer, { left: Metrics.SAFE_AREA, backgroundColor: Colors.RED_DARK, width: 55 }]}>
-                <Text style={[styles.notifModalHeaderTitle]}>Cancel</Text>
-            </TouchableOpacity>
+            {isLoading ?
+                <CustomFullLoading /> :
+                <View style={styles.notifModalContainer}>
+                    <View style={styles.notifModalHeader}>
+                        <Text style={styles.notifModalHeaderTitle}>Select Kategori</Text>
+                    </View>
+                    <View style={styles.contentContainer}>
+                        <FlatList
+                            data={dataList}
+                            extraData={[dataList]}
+                            contentContainerStyle={{
+                                flexDirection: 'row',
+                                flexWrap: 'wrap'
+                            }}
+                            renderItem={({ item, index }) => {
+                                return (
+                                    <TouchableOpacity
+                                        onPress={genreSelectedAction(item)}
+                                        style={[
+                                            styles.itemContainer,
+                                            item.kd_kategoribuku == genreSelected.kd_kategoribuku && { backgroundColor: Colors.BLUE_DARK }
+                                        ]}>
+                                        <Text numberOfLines={1}
+                                            style={[
+                                                styles.itemTitleText,
+                                                item.kd_kategoribuku == genreSelected.kd_kategoribuku && { color: Colors.WHITE }
+                                            ]}>{item.nm_kategoribuku}</Text>
+                                    </TouchableOpacity>
+                                )
+                            }}
+                            keyExtractor={(item, index) => {
+                                return String(item.kd_kategoribuku)
+                            }} />
+                    </View>
+                    <TouchableOpacity
+                        onPress={handleSubmitModal(genreSelected)}
+                        style={[styles.buttonContainer, { right: Metrics.SAFE_AREA }]}>
+                        <Text style={[styles.notifModalHeaderTitle]}>OK</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={handleCloseModal}
+                        style={[styles.buttonContainer, { left: Metrics.SAFE_AREA, backgroundColor: Colors.RED_DARK, width: 55 }]}>
+                        <Text style={[styles.notifModalHeaderTitle]}>Cancel</Text>
+                    </TouchableOpacity>
+                </View>
+            }
         </View>)
     return (
         <Modal

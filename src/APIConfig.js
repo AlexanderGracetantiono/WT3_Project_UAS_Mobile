@@ -5,13 +5,18 @@ const BASE_URL = BASE_URL_LOCAL
 
 const APIRoot = {
     ROOT_BUKU_MASTER: `${BASE_URL}buku`,
+    ROOT_PEMINJAMAN_MASTER: `${BASE_URL}peminjaman`,
+    ROOT_KATEGORI_BUKU_MASTER: `${BASE_URL}kategori_buku`,
 }
 
 // API List
 export const APIList = {
     //Book Master
-    API_GET_BUKU: `${APIRoot.ROOT_BUKU_MASTER}`,
+    API_GET_BUKU: `${APIRoot.ROOT_BUKU_MASTER}/`,
     API_GET_BUKU_BY_JUDUL: `${APIRoot.ROOT_BUKU_MASTER}/judul/`,
     API_GET_BUKU_BY_KATEGORI: `${APIRoot.ROOT_BUKU_MASTER}/kategori/`,
+    API_PINJAM_BUKU: `${APIRoot.ROOT_PEMINJAMAN_MASTER}/pinjam`,
+    API_KEMBALIKAN_BUKU: `${APIRoot.ROOT_PEMINJAMAN_MASTER}/kembali`,
+    API_GET_KATEGORI_BUKU: `${APIRoot.ROOT_KATEGORI_BUKU_MASTER}`,
     
 }

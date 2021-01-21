@@ -16,7 +16,6 @@ export default (props) => {
         wait(2000)
         .then(() => {
             AsyncStorage.getItem(StorageKeys.userData, (err, res) => {
-                console.log("RES",res)
                 if (res) {
                     Actions.home()
                 }

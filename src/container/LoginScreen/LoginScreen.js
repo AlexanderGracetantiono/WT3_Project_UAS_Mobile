@@ -37,6 +37,7 @@ export default (props) => {
         let dataUser ={
             name:'Guest',
             company:"Debookers Guest",
+            id:1
         }
         AsyncStorage.setItem(StorageKeys.userData,JSON.stringify(dataUser))
         wait(200)

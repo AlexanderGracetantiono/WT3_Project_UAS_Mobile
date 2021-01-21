@@ -20,7 +20,16 @@ export default class CustomButton extends PureComponent {
     }
 
     render() {
-        const { label, onPress, customColor, outline, style,isCancel, ...props } = this.props;
+        const {
+            label,
+            onPress,
+            customColor,
+            outline,
+            style,
+            isCancel,
+            isDisabled,
+            ...props
+        } = this.props;
         const buttonStyle = {
             alignItems: 'center',
             justifyContent: 'center',
@@ -36,22 +45,28 @@ export default class CustomButton extends PureComponent {
         }
         const buttonText = {
             color: outline ? Colors.BLUE_DARK : Colors.WHITE_LIGHT_GRAY,
-            fontFamily: Fonts.SFCompactSemibold,
+            fontFamily: Fonts.INTER_SEMI_BOLD,
             letterSpacing: 0.5,
-            fontSize:12,
+            fontSize: 16,
         }
         if (Platform.OS == 'android') {
             return (
-                <TouchableNativeFeedback disabled={props.isLoading} onPress={onPress} {...props}>
+                <TouchableNativeFeedback 
+                disabled={props.isLoading||isDisabled} 
+                onPress={onPress} {...props}>
                     <View style={[
                         buttonStyle,
                         outline && { borderWidth: 1, borderColor: Colors.BLUE_DARK },
                         props.disabled || props.isLoading ? buttonDisabledShadowStyle : buttonShadowStyle,
-                        style
+                        style,
+                        isDisabled && { backgroundColor: Colors.GRAY_LIGHT }
                     ]}>
                         {props.isLoading ?
                             <ActivityIndicator color={Colors.WHITE_LIGHT_GRAY} size='small' /> :
-                            <Text style={buttonText}>{label}</Text>}
+                            <Text style={[
+                                buttonText,
+                                isDisabled && { color: Colors.BLUE_DARK }
+                            ]}>{label}</Text>}
                     </View>
                 </TouchableNativeFeedback>
             )
@@ -61,8 +76,12 @@ export default class CustomButton extends PureComponent {
                 style={[
                     buttonStyle,
                     props.disabled || props.isLoading ? buttonDisabledShadowStyle : buttonShadowStyle,
-                    style
-                ]} disabled={props.isLoading} onPress={onPress} {...props}>
+                    style,
+                    isDisabled && { backgroundColor: Colors.GRAY_LIGHT }
+                ]}
+                disabled={props.isLoading}
+                onPress={onPress}
+                {...props}>
                 {props.isLoading ?
                     <ActivityIndicator color={Colors.WHITE_LIGHT_GRAY} size='small' /> :
                     <Text style={buttonText}>{label}</Text>}
