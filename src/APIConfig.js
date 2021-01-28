@@ -7,6 +7,7 @@ const APIRoot = {
     ROOT_BUKU_MASTER: `${BASE_URL}buku`,
     ROOT_PEMINJAMAN_MASTER: `${BASE_URL}peminjaman`,
     ROOT_KATEGORI_BUKU_MASTER: `${BASE_URL}kategori_buku`,
+    ROOT_LOGIN_MASTER: `${BASE_URL}account`,
 }
 
 // API List
@@ -18,5 +19,7 @@ export const APIList = {
     API_PINJAM_BUKU: `${APIRoot.ROOT_PEMINJAMAN_MASTER}/pinjam`,
     API_KEMBALIKAN_BUKU: `${APIRoot.ROOT_PEMINJAMAN_MASTER}/kembali`,
     API_GET_KATEGORI_BUKU: `${APIRoot.ROOT_KATEGORI_BUKU_MASTER}`,
+    API_LOGIN_USER: `${APIRoot.ROOT_LOGIN_MASTER}/login`,
+    API_GET_USER: `${APIRoot.ROOT_LOGIN_MASTER}/`,
     
 }

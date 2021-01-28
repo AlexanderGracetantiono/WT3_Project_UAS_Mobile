@@ -15,6 +15,7 @@ import { Actions } from "react-native-router-flux";
 import CustomTextInput from "../../components/CustomTextInput";
 import CustomButton from "../../components/CustomButton";
 import AsyncStorage from '@react-native-community/async-storage';
+import { UserManagement } from "../../models/UserManagement";
 export default (props) => {
     const [userName, setUserName] = useState("")
     const [password, setPassword] = useState("")
@@ -32,14 +33,58 @@ export default (props) => {
                 setisLoading(false)
             })
     }
+    const handleLoginUser = () => {
+        setisLoading(true)
+        const formdata = {
+            'username': userName,
+            'password': password
+        }
+        UserManagement.loginUser(formdata, res => {
+            const { status, result } = res
+            console.log("DATa:",result.detailUser)
+            let user_detail =result.detailUser
+            switch (status) {
+                case 200:
+                    let dataUser = {
+                        name: user_detail.nama,
+                        company: user_detail.email,
+                        id: user_detail.id_account,
+                        allow_pinjam: 1,
+                        detailUser:user_detail
+                    }
+                    AsyncStorage.setItem(StorageKeys.userData, JSON.stringify(dataUser))
+                    wait(200)
+                        .then(() => {
+                            Actions.home()
+                            setisLoading(false)
+                        })
+                    break;
+                case 400:
+                    wait(200)
+                        .then(() => {
+                            setisLoading(false)
+                        })
+                    break;
+                default:
+                    wait(200)
+                        .then(() => {
+                            setisLoading(false)
+                        })
+                    break;
+            }
+
+        })
+    }
     const handleLoginGuest = () => {
         setisLoading(true)
-        let dataUser ={
-            name:'Guest',
-            company:"Debookers Guest",
-            id:1
+        let dataUser = {
+            name: 'Guest',
+            company: "Debookers Guest",
+            id: 0,
+            allow_pinjam: 0,
+            detailUser:null
         }
-        AsyncStorage.setItem(StorageKeys.userData,JSON.stringify(dataUser))
+        AsyncStorage.setItem(StorageKeys.userData, JSON.stringify(dataUser))
         wait(200)
             .then(() => {
                 Actions.home()
@@ -74,12 +119,12 @@ export default (props) => {
                 <CustomButton
                     style={{ marginTop: 20 }}
                     isLoading={isLoading}
-                    onPress={handleLogin}
+                    onPress={handleLoginUser}
                     label={"Login"}
                 />
-                <TouchableOpacity 
-                onPress={handleLoginGuest}
-                style={styles.guestAccountContainer}>
+                <TouchableOpacity
+                    onPress={handleLoginGuest}
+                    style={styles.guestAccountContainer}>
                     <Text style={styles.titleTextStyle}>Login as Guest</Text>
                 </TouchableOpacity>
             </View>
@@ -99,7 +144,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     guestAccountContainer: {
-        marginTop:10,
+        marginTop: 10,
         alignItems: 'center',
     },
     itemTitleText: {

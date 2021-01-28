@@ -23,16 +23,19 @@ export default (props) => {
     } = props
     const [isLoading, setIsLoading] = useState(false)
     const [isLoadingScreen, setIsLoadingScreen] = useState(false)
-    const [userData, setUserData] = useState({})
     const [bookDetail, setBookDetail] = useState({})
+    const [userData, setUserData] = useState({})
+    const [status_peminjaman, setStatus_peminjaman] = useState(null)
     useEffect(() => {
         setUserData({})
         setBookDetail({})
+        setStatus_peminjaman(null)
         setIsLoading(false)
         setIsLoadingScreen(true)
         AsyncStorage.getItem(StorageKeys.userData, (err, res) => {
             let get_data_user = JSON.parse(res)
             setUserData(get_data_user)
+            setStatus_peminjaman(get_data_user.detailUser.status_peminjaman)
         })
         getBookById(item.kd_buku)
     }, [])
@@ -94,7 +97,6 @@ export default (props) => {
                         })
                     break;
             }
-
         })
     }
     const handleRequestPengembalian = () => {
@@ -160,28 +162,44 @@ export default (props) => {
                         </View>
                     </View>
                     <View style={styles.btnContainer}>
-                        {bookDetail.status_buku == 1 ?
-                            userData.id == bookDetail.id_peminjam ?
-                                <CustomButton
-                                    style={{ borderRadius: 0, height: '100%', backgroundColor: Colors.RED_DARK }}
-                                    isLoading={isLoading}
-                                    onPress={handleRequestPengembalian}
-                                    label={"Kembalikan Buku"}
-                                />
-                                :
-                                <CustomButton
-                                    isDisabled={true}
-                                    style={{ borderRadius: 0, height: '100%' }}
-                                    isLoading={isLoading}
-                                    label={"Tidak Tersedia"}
-                                />
-                            :
+                        {/* {console.log("Da<",userData.detailUser.status_peminjaman)} */}
+                        {userData.allow_pinjam == 0 || userData == null ?
                             <CustomButton
-                                style={{ borderRadius: 0, height: '100%' }}
+                                isDisabled={true}
+                                style={{ borderRadius: 0, height: '100%', backgroundColor: Colors.GRAY }}
                                 isLoading={isLoading}
-                                onPress={handleRequestPeminjaman}
-                                label={"Request Peminjaman"}
+                                label={"Harap Melakukan Login"}
                             />
+                            :
+                            bookDetail.status_buku == 1 ?
+                                userData.id == bookDetail.id_peminjam ?
+                                    <CustomButton
+                                        style={{ borderRadius: 0, height: '100%', backgroundColor: Colors.RED_DARK }}
+                                        isLoading={isLoading}
+                                        onPress={handleRequestPengembalian}
+                                        label={"Kembalikan Buku"}
+                                    />
+                                    :
+                                    <CustomButton
+                                        isDisabled={true}
+                                        style={{ borderRadius: 0, height: '100%' }}
+                                        isLoading={isLoading}
+                                        label={"Tidak Tersedia"}
+                                    />
+                                :
+                                status_peminjaman == 1 ?
+                                    <CustomButton
+                                        isDisabled={true}
+                                        style={{ borderRadius: 0, height: '100%', backgroundColor: Colors.GRAY }}
+                                        isLoading={isLoading}
+                                        label={"Harap Mengembalikan Buku"}
+                                    /> :
+                                    <CustomButton
+                                        style={{ borderRadius: 0, height: '100%' }}
+                                        isLoading={isLoading}
+                                        onPress={handleRequestPeminjaman}
+                                        label={"Request Peminjaman"}
+                                    />
                         }
                     </View>
                 </ScrollView >

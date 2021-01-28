@@ -91,6 +91,7 @@ class NavigationRouter extends Component {
                         transitionConfig={transitionConfig}
                         key='root'>
                         <Scene
+                            initial
                             key='splash'
                             hideNavBar
                             component={SplashScreen} />
@@ -99,7 +100,6 @@ class NavigationRouter extends Component {
                             hideNavBar
                             component={LoginScreen} />
                         <Scene
-                            initial
                             key='home'
                             hideNavBar
                             component={HomeScreen} />
@@ -108,6 +108,7 @@ class NavigationRouter extends Component {
                             hideNavBar
                             component={DetailItemScreen} />
                         <Scene
+                            // initial
                             key='accountScreen'
                             hideNavBar
                             component={AccountScreen} />

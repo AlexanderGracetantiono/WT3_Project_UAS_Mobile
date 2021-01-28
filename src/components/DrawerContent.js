@@ -42,6 +42,23 @@ export default (props) => {
     useEffect(() => {
         AsyncStorage.getItem(StorageKeys.userData, (err, res) => {
             let get_data_user = JSON.parse(res)
+            if (get_data_user != null)
+                if (get_data_user.id == 0) {
+                    setMenuList([
+                        {
+                            id: "1",
+                            name: "Home",
+                            icon: "home",
+                            action_id: "home",
+                        },
+                        {
+                            id: "5",
+                            name: "Login",
+                            icon: "sign-out",
+                            action_id: "logout",
+                        },
+                    ])
+                }
             setUserData(get_data_user)
         })
     }, [Actions.currentScene])
@@ -77,10 +94,10 @@ export default (props) => {
                 </View>
                 <View style={styles.userDetailContainer}>
                     <Text numberOfLines={1} style={styles.userNameTextStyle}>
-                        {userData?userData.name:"Alexander Grace."}
-                        </Text>
+                        {userData ? userData.name : "Alexander Grace."}
+                    </Text>
                     <Text numberOfLines={1} style={styles.userCompanyNameStyle}>
-                        {userData?userData.company:"Univ. Kwik Kian Gie"}
+                        {userData ? userData.company : "Univ. Kwik Kian Gie"}
                     </Text>
                 </View>
             </View>
